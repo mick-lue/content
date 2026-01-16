@@ -344,6 +344,21 @@ script:
       - NotAvailable
     - description: Comment to be added to the incident.
       name: comment
+    - description: The description for the incident.
+      name: description
+    - auto: PREDEFINED
+      description: Change the severity of the incident.
+      name: severity
+      predefined:
+      - Unknown
+      - Informational
+      - Low
+      - Medium
+      - High
+    - description: Comment explaining the resolution of the incident and the classification choice.
+      name: resolving_comment
+    - description: The overview of an attack. When applicable, the summary contains details of what occurred, impacted assets, and the type of attack.
+      name: summary
     - description: 'A comma-separated list of custom tags associated with an incident. For example: tag1,tag2,tag3.'
       isArray: true
       name: tags

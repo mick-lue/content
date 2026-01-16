@@ -29,6 +29,7 @@ from Microsoft365Defender import (
     main,
     mirror_out_entries,
     update_remote_system_command,
+    TIMEOUT_INT,
 )
 
 MOCK_MAX_ENTRIES = 2
@@ -95,6 +96,7 @@ def test_microsoft_365_defender_incident_update_command(mocker):
         "classification": "Unknown",
         "determination": "NotAvailable",
         "assigned_to": "",
+        "severity": "Informational",
     }
     results = microsoft_365_defender_incident_update_command(client, args)
     check_api_response(results, util_load_json("./test_data/incident_update_results.json"))
@@ -121,7 +123,7 @@ def test_microsoft_365_defender_advanced_hunting_command(mocker):
 def fetch_check(mocker, client, last_run, first_fetch_time, fetch_limit, mock_results):
     mocker.patch.object(demisto, "getLastRun", return_value=last_run)
     mirroring_fields = {"mirror_direction": "Incoming", "mirror_instance": "1234"}
-    results = fetch_incidents(client, mirroring_fields, first_fetch_time, fetch_limit)
+    results = fetch_incidents(client, mirroring_fields, first_fetch_time, fetch_limit, TIMEOUT_INT)
     assert len(results) == len(mock_results)
     for incident, mock_incident in zip(results, mock_results):
         assert incident["name"] == mock_incident["name"]

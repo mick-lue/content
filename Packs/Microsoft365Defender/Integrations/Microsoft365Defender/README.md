@@ -501,6 +501,10 @@ Update the incident with the given ID.
 | classification | The specification for the incident. Possible values are: Unknown, FalsePositive, TruePositive, InformationalExpectedActivity. | Optional |
 | determination | Determination of the incident. Must be used with the classification field. Possible values depend on the classification field: TruePositive - MultiStagedAttack, MaliciousUserActivity, Malware, Phishing, CompromisedAccount, UnwantedSoftware, Other (default), InformationalExpectedActivity- SecurityTesting, LineOfBusinessApplication, ConfirmedActivity, Other (default), FalsePositive - NotMalicious, NoEnoughDataToValidate, Other (default), Unknown - NotAvailable. Possible values are: NotAvailable, Malware, SecurityTesting, UnwantedSoftware, MultiStagedAttack, MaliciousUserActivity, CompromisedAccount, Phishing, LineOfBusinessApplication, ConfirmedActivity, NotMalicious, Other. | Optional |
 | comment | Comment to be added to the incident. | Optional |
+| description | The description for the incident. | Optional |
+| severity | Change the severity of the incident. Possible values are: Unknown, Informational, Low, Medium, High | Optional |
+| resolving_comment | Comment explaining the resolution of the incident and the classification choice. | Optional |
+| summary | The overview of an attack. When applicable, the summary contains details of what occurred, impacted assets, and the type of attack. | Optional |
 | tags | A comma-separated list of custom tags associated with an incident. For example: tag1,tag2,tag3. | Optional |
 | timeout | The time limit in seconds for the http request to run. Default is 30. | Optional |
 

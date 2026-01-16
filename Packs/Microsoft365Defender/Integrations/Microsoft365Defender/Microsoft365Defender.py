@@ -63,8 +63,8 @@ class Client:
         verify: bool,
         proxy: bool,
         base_url: str = BASE_URL,
-        tenant_id: str = None,
-        enc_key: str = None,
+        tenant_id: Optional[str] = None,
+        enc_key: Optional[str] = None,
         client_credentials: bool = False,
         certificate_thumbprint: Optional[str] = None,
         private_key: Optional[str] = None,
@@ -178,8 +178,12 @@ class Client:
         classification: Optional[str] = None,
         determination: Optional[str] = None,
         tags: Optional[List[str]] = None,
-        timeout: int = None,
+        timeout: Optional[int] = None,
         comment: Optional[str] = None,
+        description: Optional[str] = None,
+        severity: Optional[str] = None,
+        resolving_comment: Optional[str] = None,
+        summary: Optional[str] = None,
     ) -> dict:
         """
          PATCH request to update single incident.
@@ -197,6 +201,14 @@ class Client:
              timeout (int): The amount of time (in seconds) that a request will wait for a client to
                  establish a connection to a remote machine before a timeout occurs.
              comment (str): Comment to be added to the incident
+             description (str): Description of the incident.
+             severity (str): Indicates the possible impact on assets. The higher the severity, the bigger the impact.
+                 Typically, higher severity items require the most immediate attention. The possible values are: unknown,
+                 informational, low, medium, high, unknownFutureValue.
+             resolving_comment (str): User input that explains the resolution of the incident and the classification choice.
+                 It contains free editable text.
+             summary (str): The overview of an attack. When applicable, the summary contains details of what occurred,
+                 impacted assets, and the type of attack.
         Returns( Dict): request results as dict:
                      { '@odata.context',
                        'value': updated incident,
@@ -210,6 +222,10 @@ class Client:
             determination=determination,
             tags=tags,
             comment=comment,
+            description=description,
+            severity=severity,
+            resolvingComment=resolving_comment,
+            summary=summary,
         )
         if assigned_to == "":
             body["assignedTo"] = ""
@@ -527,6 +543,14 @@ def microsoft_365_defender_incident_update_command(client: Client, args: dict) -
                                  Malware, SecurityPersonnel, SecurityTesting, UnwantedSoftware, Other.
               - tags - Custom tags associated with an incident. Separated by commas without spaces (CSV)
                        for example: tag1,tag2,tag3.
+              - description (str): Description of the incident.
+              - severity (str): Indicates the possible impact on assets. The higher the severity, the bigger the impact.
+                 Typically, higher severity items require the most immediate attention. The possible values are: unknown,
+                 informational, low, medium, high, unknownFutureValue.
+              - resolving_comment (str): User input that explains the resolution of the incident and the classification choice.
+                 It contains free editable text.
+              - summary (str): The overview of an attack. When applicable, the summary contains details of what occurred,
+                 impacted assets, and the type of attack.
 
     Returns: CommandResults
     """
@@ -539,6 +563,10 @@ def microsoft_365_defender_incident_update_command(client: Client, args: dict) -
     incident_id = arg_to_number(args.get("id"))
     timeout = arg_to_number(args.get("timeout", TIMEOUT))
     comment = args.get("comment")
+    description = args.get("description")
+    severity = args.get("severity")
+    resolving_comment = args.get("resolving_comment")
+    summary = args.get("summary")
 
     updated_incident = client.update_incident(
         incident_id=incident_id,
@@ -549,6 +577,10 @@ def microsoft_365_defender_incident_update_command(client: Client, args: dict) -
         tags=tags,
         timeout=timeout,
         comment=comment,
+        description=description,
+        severity=severity,
+        resolving_comment=resolving_comment,
+        summary=summary,
     )
     if updated_incident.get("@odata.context"):
         del updated_incident["@odata.context"]
@@ -599,9 +631,7 @@ def microsoft_365_defender_incident_get_command(client: Client, args: dict) -> C
 
 
 @logger
-def fetch_incidents(
-    client: Client, mirroring_fields: dict, first_fetch_time: str, fetch_limit: int, timeout: int = None
-) -> List[dict]:
+def fetch_incidents(client: Client, mirroring_fields: dict, first_fetch_time: str, fetch_limit: int, timeout: int) -> List[dict]:
     """
     Uses to fetch incidents into Demisto
     Documentation: https://xsoar.pan.dev/docs/integrations/fetching-incidents#the-fetch-incidents-command
